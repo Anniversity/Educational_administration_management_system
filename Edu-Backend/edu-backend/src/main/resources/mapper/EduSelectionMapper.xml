@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zjw.edubackend.mapper.EduSelectionMapper">
+  <resultMap id="BaseResultMap" type="cn.zjw.edubackend.pojo.po.EduSelection">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="student_id" jdbcType="INTEGER" property="studentId" />
+    <result column="course_id" jdbcType="INTEGER" property="courseId" />
+    <result column="study_type" jdbcType="TINYINT" property="studyType" />
+    <result column="score" jdbcType="DECIMAL" property="score" />
+    <result column="credit" jdbcType="DECIMAL" property="credit" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+
+    <association property="student" resultMap="cn.zjw.edubackend.mapper.EduStudentMapper.StudentResultMap" />
+    <association property="course" resultMap="cn.zjw.edubackend.mapper.EduCourseMapper.CourseResultMap" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    edu_selection.id, edu_selection.student_id, edu_selection.course_id, edu_selection.study_type, edu_selection.score, edu_selection.credit, edu_selection.update_time, edu_selection.create_time
+  </sql>
+  <sql id="Join_Student">
+    LEFT JOIN edu_student
+        ON edu_student.id = edu_selection.student_id
+  </sql>
+  <sql id="Join_Course">
+    LEFT JOIN edu_course
+        ON edu_course.id = edu_selection.course_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from edu_selection
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from edu_selection
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByCourseId">
+    delete from edu_selection
+    where course_id = #{courseId}
+  </delete>
+  <insert id="insert" parameterType="cn.zjw.edubackend.pojo.po.EduSelection">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into edu_selection (student_id, course_id, study_type, 
+      score, credit, update_time, 
+      create_time)
+    values (#{studentId,jdbcType=INTEGER}, #{courseId,jdbcType=INTEGER}, #{studyType,jdbcType=TINYINT}, 
+      #{score,jdbcType=DECIMAL}, #{credit,jdbcType=DECIMAL}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.zjw.edubackend.pojo.po.EduSelection">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into edu_selection
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="studentId != null">
+        student_id,
+      </if>
+      <if test="courseId != null">
+        course_id,
+      </if>
+      <if test="studyType != null">
+        study_type,
+      </if>
+      <if test="score != null">
+        score,
+      </if>
+      <if test="credit != null">
+        credit,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="studentId != null">
+        #{studentId,jdbcType=INTEGER},
+      </if>
+      <if test="courseId != null">
+        #{courseId,jdbcType=INTEGER},
+      </if>
+      <if test="studyType != null">
+        #{studyType,jdbcType=TINYINT},
+      </if>
+      <if test="score != null">
+        #{score,jdbcType=DECIMAL},
+      </if>
+      <if test="credit != null">
+        #{credit,jdbcType=DECIMAL},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.zjw.edubackend.pojo.po.EduSelection">
+    update edu_selection
+    <set>
+      <if test="studentId != null">
+        student_id = #{studentId,jdbcType=INTEGER},
+      </if>
+      <if test="courseId != null">
+        course_id = #{courseId,jdbcType=INTEGER},
+      </if>
+      <if test="studyType != null">
+        study_type = #{studyType,jdbcType=TINYINT},
+      </if>
+      <if test="score != null">
+        score = #{score,jdbcType=DECIMAL},
+      </if>
+      <if test="credit != null">
+        credit = #{credit,jdbcType=DECIMAL},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.zjw.edubackend.pojo.po.EduSelection">
+    update edu_selection
+    set student_id = #{studentId,jdbcType=INTEGER},
+      course_id = #{courseId,jdbcType=INTEGER},
+      study_type = #{studyType,jdbcType=TINYINT},
+      score = #{score,jdbcType=DECIMAL},
+      credit = #{credit,jdbcType=DECIMAL},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <sql id="base_query">
+    <trim prefix="WHERE" prefixOverrides="AND | OR">
+      <if test="id != null">
+         and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="studentId != null">
+         and student_id = #{studentId,jdbcType=INTEGER}
+      </if>
+      <if test="courseId != null">
+         and course_id = #{courseId,jdbcType=INTEGER}
+      </if>
+      <if test="studyType != null">
+         and study_type = #{studyType,jdbcType=TINYINT}
+      </if>
+      <if test="score != null">
+         and score = #{score,jdbcType=DECIMAL}
+      </if>
+      <if test="credit != null">
+         and credit = #{credit,jdbcType=DECIMAL}
+      </if>
+      <if test="updateTime != null">
+         and update_time = #{updateTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="createTime != null">
+         and create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+    </trim>
+  </sql>
+  <select id="selectList" parameterType="cn.zjw.edubackend.pojo.po.EduSelection" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from 
+    edu_selection
+    <include refid="base_query" />
+  </select>
+  <sql id="base_query_fuzzy">
+    <trim prefix="WHERE" prefixOverrides="AND | OR">
+      <if test="id != null">
+         and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="studentId != null">
+         and student_id = #{studentId,jdbcType=INTEGER}
+      </if>
+      <if test="courseId != null">
+         and course_id = #{courseId,jdbcType=INTEGER}
+      </if>
+      <if test="studyType != null">
+         and study_type = #{studyType,jdbcType=TINYINT}
+      </if>
+      <if test="score != null">
+         and score = #{score,jdbcType=DECIMAL}
+      </if>
+      <if test="credit != null">
+         and credit = #{credit,jdbcType=DECIMAL}
+      </if>
+    </trim>
+  </sql>
+  <select id="selectListFuzzy" parameterType="cn.zjw.edubackend.pojo.po.EduSelection" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />,
+    <include refid="cn.zjw.edubackend.mapper.EduClassMapper.Join_Class_Column" />,
+    <include refid="cn.zjw.edubackend.mapper.EduCourseMapper.Join_Course_Column" />,
+    <include refid="cn.zjw.edubackend.mapper.EduStudentMapper.Join_Student_Column" />
+    from
+    edu_selection
+    <include refid="Join_Student" />
+    <include refid="cn.zjw.edubackend.mapper.EduStudentMapper.Join_Class" />
+    <include refid="Join_Course" />
+    <include refid="base_query_fuzzy" />
+    order by edu_selection.create_time desc
+  </select>
+  <select id="countByCourseId" resultType="java.lang.Integer">
+    SELECT COUNT(*) FROM edu_selection
+    WHERE course_id = #{courseId}
+  </select>
+</mapper>

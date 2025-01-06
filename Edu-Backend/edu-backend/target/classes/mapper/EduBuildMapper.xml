@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zjw.edubackend.mapper.EduBuildMapper">
+  <resultMap id="BaseResultMap" type="cn.zjw.edubackend.pojo.po.EduBuild">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="update_time" jdbcType="DATE" property="updateTime" />
+    <result column="create_time" jdbcType="DATE" property="createTime" />
+
+    <collection property="classrooms" resultMap="cn.zjw.edubackend.mapper.EduClassroomMapper.ClassroomResultMap" />
+  </resultMap>
+  <resultMap id="BuildResultMap" type="cn.zjw.edubackend.pojo.po.EduBuild">
+    <id column="build_id" jdbcType="INTEGER" property="id" />
+    <result column="build_name" jdbcType="VARCHAR" property="name" />
+  </resultMap>
+  <sql id="Join_Build_Column">
+    edu_build.id build_id, edu_build.name build_name
+  </sql>
+  <sql id="Join_Classroom">
+    LEFT JOIN edu_classroom
+        ON edu_classroom.build_id = edu_build.id
+  </sql>
+  <sql id="Base_Column_List">
+    edu_build.id, edu_build.name, edu_build.update_time, edu_build.create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from edu_build
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from edu_build
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.zjw.edubackend.pojo.po.EduBuild">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into edu_build (name, update_time, create_time
+      )
+    values (#{name,jdbcType=VARCHAR}, #{updateTime,jdbcType=DATE}, #{createTime,jdbcType=DATE}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.zjw.edubackend.pojo.po.EduBuild">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into edu_build
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        name,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=DATE},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.zjw.edubackend.pojo.po.EduBuild">
+    update edu_build
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=DATE},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=DATE},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.zjw.edubackend.pojo.po.EduBuild">
+    update edu_build
+    set name = #{name,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=DATE},
+      create_time = #{createTime,jdbcType=DATE}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <sql id="base_query">
+    <trim prefix="WHERE" prefixOverrides="AND | OR">
+      <if test="id != null">
+         and edu_build.id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="name != null and name.length > 0">
+         and edu_build.name = #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="updateTime != null">
+         and edu_build.update_time = #{updateTime,jdbcType=DATE}
+      </if>
+      <if test="createTime != null">
+         and edu_build.create_time = #{createTime,jdbcType=DATE}
+      </if>
+    </trim>
+  </sql>
+  <select id="selectList" parameterType="cn.zjw.edubackend.pojo.po.EduBuild" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from 
+    edu_build
+    <include refid="base_query" />
+  </select>
+  <sql id="base_query_fuzzy">
+    <trim prefix="WHERE" prefixOverrides="AND | OR">
+      <if test="id != null">
+         and edu_build.id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="name != null and name.length > 0">
+         and edu_build.name LIKE CONCAT('%', #{name,jdbcType=VARCHAR}, '%')
+      </if>
+    </trim>
+  </sql>
+  <select id="selectListFuzzy" parameterType="cn.zjw.edubackend.pojo.po.EduBuild" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from 
+    edu_build
+    <include refid="base_query_fuzzy" />
+    order by edu_build.create_time desc
+  </select>
+  <select id="selectClassroomTreeList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />,
+    <include refid="cn.zjw.edubackend.mapper.EduClassroomMapper.Join_Classroom_Column" />
+    from
+    edu_build
+    <include refid="Join_Classroom" />
+  </select>
+  <select id="selectByName" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from
+    edu_build
+    where name = #{name}
+  </select>
+</mapper>

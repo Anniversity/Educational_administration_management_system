@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zjw.edubackend.mapper.EduScheduleMapper">
+  <resultMap id="BaseResultMap" type="cn.zjw.edubackend.pojo.po.EduSchedule">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="class_num" jdbcType="INTEGER" property="classNum" />
+    <result column="course_id" jdbcType="INTEGER" property="courseId" />
+    <result column="classroom_id" jdbcType="INTEGER" property="classroomId" />
+    <result column="section_id" jdbcType="INTEGER" property="sectionId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+
+    <association property="course" resultMap="cn.zjw.edubackend.mapper.EduCourseMapper.CourseResultMap" />
+    <association property="classroom" resultMap="cn.zjw.edubackend.mapper.EduClassroomMapper.ClassroomResultMap" />
+    <association property="section" resultMap="cn.zjw.edubackend.mapper.EduSectionMapper.SectionResultMap" />
+  </resultMap>
+  <resultMap id="ScheduleResultMap" type="cn.zjw.edubackend.pojo.po.EduSchedule">
+    <id column="schedule_id" jdbcType="INTEGER" property="id" />
+    <result column="schedule_course_id" jdbcType="INTEGER" property="courseId" />
+
+    <association property="course" resultMap="cn.zjw.edubackend.mapper.EduCourseMapper.CourseResultMap" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    edu_schedule.id, edu_schedule.class_num, edu_schedule.course_id, edu_schedule.classroom_id, edu_schedule.section_id, edu_schedule.update_time, edu_schedule.create_time
+  </sql>
+  <sql id="Join_Schedule_Column">
+    edu_schedule.id schedule_id, edu_schedule.course_id schedule_course_id
+  </sql>
+  <sql id="Join_Classroom">
+    LEFT JOIN edu_classroom
+        ON edu_schedule.classroom_id = edu_classroom.id
+  </sql>
+  <sql id="Join_Section">
+    LEFT JOIN edu_section
+        ON edu_schedule.section_id = edu_section.id
+  </sql>
+  <sql id="Join_Course">
+    LEFT JOIN edu_course
+        ON edu_schedule.course_id = edu_course.id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from edu_schedule
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from edu_schedule
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByCourseId">
+    delete from edu_schedule
+    where course_id = #{courseId}
+  </delete>
+  <insert id="insert" parameterType="cn.zjw.edubackend.pojo.po.EduSchedule">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into edu_schedule (class_num, course_id, classroom_id,
+      section_id, update_time, create_time
+      )
+    values (#{classNum,jdbcType=INTEGER}, #{courseId,jdbcType=INTEGER}, #{classroomId,jdbcType=INTEGER},
+      #{sectionId,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.zjw.edubackend.pojo.po.EduSchedule">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into edu_schedule
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="classNum != null">
+        class_num,
+      </if>
+      <if test="courseId != null">
+        course_id,
+      </if>
+      <if test="classroomId != null">
+        classroom_id,
+      </if>
+      <if test="sectionId != null">
+        section_id,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="classNum != null">
+        #{classNum,jdbcType=INTEGER},
+      </if>
+      <if test="courseId != null">
+        #{courseId,jdbcType=INTEGER},
+      </if>
+      <if test="classroomId != null">
+        #{classroomId,jdbcType=INTEGER},
+      </if>
+      <if test="sectionId != null">
+        #{sectionId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.zjw.edubackend.pojo.po.EduSchedule">
+    update edu_schedule
+    <set>
+      <if test="classNum != null">
+        class_num = #{classNum,jdbcType=INTEGER},
+      </if>
+      <if test="courseId != null">
+        course_id = #{courseId,jdbcType=INTEGER},
+      </if>
+      <if test="classroomId != null">
+        classroom_id = #{classroomId,jdbcType=INTEGER},
+      </if>
+      <if test="sectionId != null">
+        section_id = #{sectionId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.zjw.edubackend.pojo.po.EduSchedule">
+    update edu_schedule
+    set class_num = #{classNum,jdbcType=INTEGER},
+      course_id = #{courseId,jdbcType=INTEGER},
+      classroom_id = #{classroomId,jdbcType=INTEGER},
+      section_id = #{sectionId,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <sql id="base_query">
+    <trim prefix="WHERE" prefixOverrides="AND | OR">
+      <if test="id != null">
+         and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="classNum != null">
+         and class_num = #{classNum,jdbcType=INTEGER}
+      </if>
+      <if test="courseId != null">
+         and course_id = #{courseId,jdbcType=INTEGER}
+      </if>
+      <if test="classroomId != null">
+         and classroom_id = #{classroomId,jdbcType=INTEGER}
+      </if>
+      <if test="sectionId != null">
+         and section_id = #{sectionId,jdbcType=INTEGER}
+      </if>
+      <if test="updateTime != null">
+         and update_time = #{updateTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="createTime != null">
+         and create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+    </trim>
+  </sql>
+  <select id="selectList" parameterType="cn.zjw.edubackend.pojo.po.EduSchedule" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from
+    edu_schedule
+    <include refid="base_query" />
+  </select>
+  <sql id="base_query_fuzzy">
+    <trim prefix="WHERE" prefixOverrides="AND | OR">
+      <if test="id != null">
+         and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="classNum != null">
+         and class_num = #{classNum,jdbcType=INTEGER}
+      </if>
+      <if test="courseId != null">
+         and course_id = #{courseId,jdbcType=INTEGER}
+      </if>
+      <if test="classroomId != null">
+         and classroom_id = #{classroomId,jdbcType=INTEGER}
+      </if>
+      <if test="sectionId != null">
+         and section_id = #{sectionId,jdbcType=INTEGER}
+      </if>
+
+      <if test="classId != null">AND edu_class.id = #{classId}</if>
+      <if test="studentId != null">
+        AND edu_schedule.course_id IN (SELECT course_id FROM edu_selection WHERE edu_selection.student_id = #{studentId})
+        OR edu_course.class_id = (SELECT class_id FROM edu_student WHERE edu_student.id = #{studentId})
+      </if>
+      <if test="teacherId != null">AND edu_teacher.id = #{teacherId}</if>
+      <if test="year != null">AND edu_course.year = #{year}</if>
+      <if test="semester != null">AND edu_course.semester = #{semester}</if>
+    </trim>
+  </sql>
+  <select id="selectListFuzzy" parameterType="cn.zjw.edubackend.pojo.po.EduSchedule" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />,
+    <include refid="cn.zjw.edubackend.mapper.EduClassroomMapper.Join_Classroom_Column" />,
+    <include refid="cn.zjw.edubackend.mapper.EduSectionMapper.Join_Section_Column" />,
+    <include refid="cn.zjw.edubackend.mapper.EduCourseMapper.Join_Course_Column" />,
+    <include refid="cn.zjw.edubackend.mapper.EduClassMapper.Join_Class_Column" />,
+    <include refid="cn.zjw.edubackend.mapper.EduTeacherMapper.Join_Teacher_Column" />,
+    <include refid="cn.zjw.edubackend.mapper.EduBuildMapper.Join_Build_Column" />
+    from
+    edu_schedule
+    <include refid="Join_Classroom" />
+    <include refid="cn.zjw.edubackend.mapper.EduClassroomMapper.Join_Build" />
+    <include refid="Join_Section" />
+    <include refid="Join_Course" />
+    <include refid="cn.zjw.edubackend.mapper.EduCourseMapper.Join_Class" />
+    <include refid="cn.zjw.edubackend.mapper.EduCourseMapper.Join_Teacher" />
+    <include refid="base_query_fuzzy" />
+    order by edu_schedule.create_time desc
+  </select>
+</mapper>

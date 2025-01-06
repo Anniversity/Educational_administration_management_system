@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zjw.edubackend.mapper.EduTeacherMapper">
+    <resultMap id="BaseResultMap" type="cn.zjw.edubackend.pojo.po.EduTeacher">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="birthday" jdbcType="DATE" property="birthday"/>
+        <result column="entry_date" jdbcType="DATE" property="entryDate" />
+        <result column="idcard" jdbcType="CHAR" property="idcard"/>
+        <result column="mobile" jdbcType="CHAR" property="mobile"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="job_number" jdbcType="CHAR" property="jobNumber"/>
+        <result column="dept_id" jdbcType="INTEGER" property="deptId"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+
+        <association property="dept" resultMap="cn.zjw.edubackend.mapper.EduDeptMapper.DeptResultMap"/>
+    </resultMap>
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="cn.zjw.edubackend.pojo.po.EduTeacher">
+        <result column="descr" jdbcType="LONGVARCHAR" property="descr"/>
+    </resultMap>
+    <resultMap id="TeacherResultMap" type="cn.zjw.edubackend.pojo.po.EduTeacher">
+        <id column="teacher_id" jdbcType="INTEGER" property="id"/>
+        <result column="teacher_name" jdbcType="VARCHAR" property="name"/>
+        <result column="job_number" jdbcType="CHAR" property="jobNumber"/>
+    </resultMap>
+    <sql id="Join_Teacher_Column">
+        edu_teacher
+        .
+        id
+        teacher_id, edu_teacher.name teacher_name, edu_teacher.job_number job_number
+    </sql>
+    <sql id="Join_Dept">
+        LEFT JOIN edu_dept
+        ON edu_dept.id = edu_teacher.dept_id
+    </sql>
+    <sql id="Base_Column_List">
+        edu_teacher
+        .
+        id
+        , edu_teacher.name, edu_teacher.birthday, edu_teacher.idcard, edu_teacher.entry_date, edu_teacher.mobile, edu_teacher.password, edu_teacher.job_number, edu_teacher.dept_id, edu_teacher.update_time, edu_teacher.create_time
+    </sql>
+    <sql id="Blob_Column_List">
+        descr
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from edu_teacher
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from edu_teacher
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="cn.zjw.edubackend.pojo.po.EduTeacher">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into edu_teacher (name, birthday, entry_date,
+        idcard, mobile, password,
+        job_number, dept_id, update_time,
+        create_time, descr)
+        values (#{name,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE}, #{entryDate,jdbcType=DATE},
+        #{idcard,jdbcType=CHAR}, #{mobile,jdbcType=CHAR}, #{password,jdbcType=VARCHAR},
+        #{jobNumber,jdbcType=CHAR}, #{deptId,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP},
+        #{createTime,jdbcType=TIMESTAMP}, #{descr,jdbcType=LONGVARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="cn.zjw.edubackend.pojo.po.EduTeacher">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into edu_teacher
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                name,
+            </if>
+            <if test="birthday != null">
+                birthday,
+            </if>
+            <if test="entryDate != null">
+                entry_date,
+            </if>
+            <if test="idcard != null">
+                idcard,
+            </if>
+            <if test="mobile != null">
+                mobile,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="jobNumber != null">
+                job_number,
+            </if>
+            <if test="deptId != null">
+                dept_id,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="descr != null">
+                descr,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="birthday != null">
+                #{birthday,jdbcType=DATE},
+            </if>
+            <if test="entryDate != null">
+                #{entryDate,jdbcType=DATE},
+            </if>
+            <if test="idcard != null">
+                #{idcard,jdbcType=CHAR},
+            </if>
+            <if test="mobile != null">
+                #{mobile,jdbcType=CHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="jobNumber != null">
+                #{jobNumber,jdbcType=CHAR},
+            </if>
+            <if test="deptId != null">
+                #{deptId,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="descr != null">
+                #{descr,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.zjw.edubackend.pojo.po.EduTeacher">
+        update edu_teacher
+        <set>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="birthday != null">
+                birthday = #{birthday,jdbcType=DATE},
+            </if>
+            <if test="entryDate != null">
+                entry_date = #{entryDate,jdbcType=DATE},
+            </if>
+            <if test="idcard != null">
+                idcard = #{idcard,jdbcType=CHAR},
+            </if>
+            <if test="mobile != null">
+                mobile = #{mobile,jdbcType=CHAR},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="jobNumber != null">
+                job_number = #{jobNumber,jdbcType=CHAR},
+            </if>
+            <if test="deptId != null">
+                dept_id = #{deptId,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="descr != null">
+                descr = #{descr,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="cn.zjw.edubackend.pojo.po.EduTeacher">
+        update edu_teacher
+        set name = #{name,jdbcType=VARCHAR},
+            birthday = #{birthday,jdbcType=DATE},
+            entry_date = #{entryDate,jdbcType=DATE},
+            idcard = #{idcard,jdbcType=CHAR},
+            mobile = #{mobile,jdbcType=CHAR},
+            password = #{password,jdbcType=VARCHAR},
+            job_number = #{jobNumber,jdbcType=CHAR},
+            dept_id = #{deptId,jdbcType=INTEGER},
+            update_time = #{updateTime,jdbcType=TIMESTAMP},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            descr = #{descr,jdbcType=LONGVARCHAR}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="cn.zjw.edubackend.pojo.po.EduTeacher">
+        update edu_teacher
+        set name = #{name,jdbcType=VARCHAR},
+            birthday = #{birthday,jdbcType=DATE},
+            entry_date = #{entryDate,jdbcType=DATE},
+            idcard = #{idcard,jdbcType=CHAR},
+            mobile = #{mobile,jdbcType=CHAR},
+            password = #{password,jdbcType=VARCHAR},
+            job_number = #{jobNumber,jdbcType=CHAR},
+            dept_id = #{deptId,jdbcType=INTEGER},
+            update_time = #{updateTime,jdbcType=TIMESTAMP},
+            create_time = #{createTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <sql id="base_query">
+        <trim prefix="WHERE" prefixOverrides="AND | OR">
+            <if test="id != null">
+                and edu_teacher.id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="name != null and name.length > 0">
+                and edu_teacher.name = #{name,jdbcType=VARCHAR}
+            </if>
+            <if test="birthday != null">
+                and edu_teacher.birthday = #{birthday,jdbcType=DATE}
+            </if>
+            <if test="entryDate != null">
+                and edu_teacher.entry_date = #{entryDate,jdbcType=DATE}
+            </if>
+            <if test="idcard != null and idcard.length > 0">
+                and edu_teacher.idcard = #{idcard,jdbcType=CHAR}
+            </if>
+            <if test="mobile != null and mobile.length > 0">
+                and edu_teacher.mobile = #{mobile,jdbcType=CHAR}
+            </if>
+            <if test="password != null and password.length > 0">
+                and edu_teacher.password = #{password,jdbcType=VARCHAR}
+            </if>
+            <if test="jobNumber != null and jobNumber.length > 0">
+                and edu_teacher.job_number = #{jobNumber,jdbcType=CHAR}
+            </if>
+            <if test="deptId != null">
+                and edu_teacher.dept_id = #{deptId,jdbcType=INTEGER}
+            </if>
+            <if test="updateTime != null">
+                and edu_teacher.update_time = #{updateTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="createTime != null">
+                and edu_teacher.create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="descr != null">
+                and edu_teacher.descr = #{descr,jdbcType=LONGVARCHAR}
+            </if>
+        </trim>
+    </sql>
+    <select id="selectList" parameterType="cn.zjw.edubackend.pojo.po.EduTeacher" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        edu_teacher
+        <include refid="base_query"/>
+    </select>
+    <sql id="base_query_fuzzy">
+        <trim prefix="WHERE" prefixOverrides="AND | OR">
+            <if test="id != null">
+                and edu_teacher.id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="name != null and name.length > 0">
+                and edu_teacher.name LIKE CONCAT('%', #{name,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="birthday != null">
+                and date_format(edu_teacher.birthday'%Y-%m-%d') = date_format(#{birthday,jdbcType=DATE}, '%Y-%m-%d')
+            </if>
+            <if test="entryDate != null">
+                and date_format(edu_teacher.entry_date'%Y-%m-%d') = date_format(#{entryDate,jdbcType=DATE}, '%Y-%m-%d')
+            </if>
+            <if test="idcard != null and idcard.length > 0">
+                and edu_teacher.idcard LIKE CONCAT('%', #{idcard,jdbcType=CHAR}, '%')
+            </if>
+            <if test="mobile != null and mobile.length > 0">
+                and edu_teacher.mobile LIKE CONCAT('%', #{mobile,jdbcType=CHAR}, '%')
+            </if>
+            <if test="password != null and password.length > 0">
+                and edu_teacher.password LIKE CONCAT('%', #{password,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="jobNumber != null and jobNumber.length > 0">
+                and edu_teacher.job_number LIKE CONCAT('%', #{jobNumber,jdbcType=CHAR}, '%')
+            </if>
+            <if test="deptId != null">
+                and edu_teacher.dept_id = #{deptId,jdbcType=INTEGER}
+            </if>
+            <if test="descr != null">
+                and edu_teacher.descr = #{descr,jdbcType=LONGVARCHAR}
+            </if>
+        </trim>
+    </sql>
+    <select id="selectListFuzzy" parameterType="cn.zjw.edubackend.pojo.po.EduTeacher" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>,
+        <include refid="cn.zjw.edubackend.mapper.EduDeptMapper.Join_Dept_Column"/>
+        from
+        edu_teacher
+        <include refid="Join_Dept"/>
+        <include refid="base_query_fuzzy"/>
+        order by edu_teacher.create_time desc
+    </select>
+    <select id="selectByJobNumber" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        edu_teacher
+        where job_number = #{jobNumber}
+    </select>
+    <select id="selectByIdcard" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        edu_teacher
+        where idcard = #{idcard}
+    </select>
+</mapper>

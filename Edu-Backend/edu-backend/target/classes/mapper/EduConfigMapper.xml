@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zjw.edubackend.mapper.EduConfigMapper">
+    <resultMap id="BaseResultMap" type="cn.zjw.edubackend.pojo.po.EduConfig">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="key" jdbcType="VARCHAR" property="key"/>
+        <result column="value" jdbcType="VARCHAR" property="value"/>
+        <result column="key_name" jdbcType="VARCHAR" property="keyName"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id
+        , `key`, `value`, key_name, remark, update_time, create_time
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from edu_config
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from edu_config
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="cn.zjw.edubackend.pojo.po.EduConfig">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into edu_config (`key`, `value`, key_name,
+        remark, update_time, create_time
+        )
+        values (#{key,jdbcType=VARCHAR}, #{value,jdbcType=VARCHAR}, #{keyName,jdbcType=VARCHAR},
+        #{remark,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="cn.zjw.edubackend.pojo.po.EduConfig">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into edu_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="key != null">
+                `key`,
+            </if>
+            <if test="value != null">
+                `value`,
+            </if>
+            <if test="keyName != null">
+                key_name,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="key != null">
+                #{key,jdbcType=VARCHAR},
+            </if>
+            <if test="value != null">
+                #{value,jdbcType=VARCHAR},
+            </if>
+            <if test="keyName != null">
+                #{keyName,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.zjw.edubackend.pojo.po.EduConfig">
+        update edu_config
+        <set>
+            <if test="key != null">
+                `key` = #{key,jdbcType=VARCHAR},
+            </if>
+            <if test="value != null">
+                `value` = #{value,jdbcType=VARCHAR},
+            </if>
+            <if test="keyName != null">
+                key_name = #{keyName,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="cn.zjw.edubackend.pojo.po.EduConfig">
+        update edu_config
+        set `key`       = #{key,jdbcType=VARCHAR},
+            `value`     = #{value,jdbcType=VARCHAR},
+            key_name    = #{keyName,jdbcType=VARCHAR},
+            remark      = #{remark,jdbcType=VARCHAR},
+            update_time = #{updateTime,jdbcType=TIMESTAMP},
+            create_time = #{createTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateMoreByKey" parameterType="java.util.List">
+        <foreach collection="list" item="item" separator=";">
+            update edu_config
+            set `value` = #{item.value}
+            where `key` = #{item.key}
+        </foreach>
+    </update>
+    <sql id="base_query">
+        <trim prefix="WHERE" prefixOverrides="AND | OR">
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="key != null and key.length > 0">
+                and `key` = #{key,jdbcType=VARCHAR}
+            </if>
+            <if test="value != null and value.length > 0">
+                and `value` = #{value,jdbcType=VARCHAR}
+            </if>
+            <if test="keyName != null and keyName.length > 0">
+                and key_name = #{keyName,jdbcType=VARCHAR}
+            </if>
+            <if test="remark != null and remark.length > 0">
+                and remark = #{remark,jdbcType=VARCHAR}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+        </trim>
+    </sql>
+    <select id="selectList" parameterType="cn.zjw.edubackend.pojo.po.EduConfig" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        edu_config
+        <include refid="base_query"/>
+    </select>
+    <sql id="base_query_fuzzy">
+        <trim prefix="WHERE" prefixOverrides="AND | OR">
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="key != null and key.length > 0">
+                and `key` LIKE CONCAT('%', #{key,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="value != null and value.length > 0">
+                and `value` LIKE CONCAT('%', #{value,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="keyName != null and keyName.length > 0">
+                and key_name LIKE CONCAT('%', #{keyName,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="remark != null and remark.length > 0">
+                and remark LIKE CONCAT('%', #{remark,jdbcType=VARCHAR}, '%')
+            </if>
+        </trim>
+    </sql>
+    <select id="selectListFuzzy" parameterType="cn.zjw.edubackend.pojo.po.EduConfig" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        edu_config
+        <include refid="base_query_fuzzy"/>
+        order by edu_config.create_time desc
+    </select>
+    <select id="selectByKey" resultMap="BaseResultMap"
+            parameterType="java.lang.String">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from
+        edu_config
+        WHERE `key` = #{key}
+    </select>
+</mapper>

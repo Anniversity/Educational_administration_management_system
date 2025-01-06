@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zjw.edubackend.mapper.EduMajorMapper">
+  <resultMap id="BaseResultMap" type="cn.zjw.edubackend.pojo.po.EduMajor">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="dept_id" jdbcType="INTEGER" property="deptId" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="school_system" jdbcType="TINYINT" property="schoolSystem" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+
+    <association property="dept" resultMap="cn.zjw.edubackend.mapper.EduDeptMapper.DeptResultMap" />
+  </resultMap>
+  <resultMap id="MajorResultMap" type="cn.zjw.edubackend.pojo.po.EduMajor">
+    <id column="major_id" jdbcType="INTEGER" property="id" />
+    <result column="major_name" jdbcType="VARCHAR" property="name" />
+    <result column="dept_id" jdbcType="INTEGER" property="deptId" />
+
+    <association property="dept" resultMap="cn.zjw.edubackend.mapper.EduDeptMapper.DeptResultMap" />
+
+    <collection property="classes" resultMap="cn.zjw.edubackend.mapper.EduClassMapper.ClassResultMap" />
+  </resultMap>
+  <sql id="Join_Major_Column">
+    edu_major.id major_id, edu_major.name major_name, edu_major.school_system, edu_major.dept_id
+  </sql>
+  <sql id="Join_Dept">
+    LEFT JOIN edu_dept
+        ON edu_major.dept_id = edu_dept.id
+  </sql>
+  <sql id="Join_Class">
+    LEFT JOIN edu_class
+        ON edu_class.major_id = edu_major.id
+  </sql>
+  <sql id="Base_Column_List">
+    edu_major.id, edu_major.name, edu_major.dept_id, edu_major.school_system, edu_major.remark, edu_major.update_time, edu_major.create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from edu_major
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from edu_major
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.zjw.edubackend.pojo.po.EduMajor">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into edu_major (name, dept_id, school_system,
+    remark, update_time, create_time
+    )
+    values (#{name,jdbcType=VARCHAR}, #{deptId,jdbcType=INTEGER}, #{schoolSystem,jdbcType=TINYINT},
+    #{remark,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}
+    )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.zjw.edubackend.pojo.po.EduMajor">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into edu_major
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        name,
+      </if>
+      <if test="deptId != null">
+        dept_id,
+      </if>
+      <if test="schoolSystem != null">
+        school_system,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="deptId != null">
+        #{deptId,jdbcType=INTEGER},
+      </if>
+      <if test="schoolSystem != null">
+        #{schoolSystem,jdbcType=TINYINT},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.zjw.edubackend.pojo.po.EduMajor">
+    update edu_major
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="deptId != null">
+        dept_id = #{deptId,jdbcType=INTEGER},
+      </if>
+      <if test="schoolSystem != null">
+        school_system = #{schoolSystem,jdbcType=TINYINT},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.zjw.edubackend.pojo.po.EduMajor">
+    update edu_major
+    set name = #{name,jdbcType=VARCHAR},
+        dept_id = #{deptId,jdbcType=INTEGER},
+        school_system = #{schoolSystem,jdbcType=TINYINT},
+        remark = #{remark,jdbcType=VARCHAR},
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+        create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <sql id="base_query">
+    <trim prefix="WHERE" prefixOverrides="AND | OR">
+      <if test="id != null">
+         and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="name != null and name.length > 0">
+         and name = #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="deptId != null">
+         and dept_id = #{deptId,jdbcType=INTEGER}
+      </if>
+      <if test="schoolSystem != null">
+        and edu_major.school_system = #{schoolSystem,jdbcType=TINYINT}
+      </if>
+      <if test="remark != null and remark.length > 0">
+         and remark = #{remark,jdbcType=VARCHAR}
+      </if>
+      <if test="updateTime != null">
+         and update_time = #{updateTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="createTime != null">
+         and create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+    </trim>
+  </sql>
+  <select id="selectList" parameterType="cn.zjw.edubackend.pojo.po.EduMajor" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from 
+    edu_major
+    <include refid="base_query" />
+    order by edu_major.create_time desc
+  </select>
+  <sql id="base_query_fuzzy">
+    <trim prefix="WHERE" prefixOverrides="AND | OR">
+      <if test="id != null">
+         and edu_major.id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="name != null and name.length > 0">
+         and edu_major.name LIKE CONCAT('%', #{name,jdbcType=VARCHAR}, '%')
+      </if>
+      <if test="deptId != null">
+         and edu_major.dept_id = #{deptId,jdbcType=INTEGER}
+      </if>
+      <if test="schoolSystem != null">
+        and edu_major.school_system = #{schoolSystem,jdbcType=TINYINT}
+      </if>
+      <if test="remark != null and remark.length > 0">
+         and edu_major.remark LIKE CONCAT('%', #{remark,jdbcType=VARCHAR}, '%')
+      </if>
+    </trim>
+  </sql>
+  <select id="selectListFuzzy" parameterType="cn.zjw.edubackend.pojo.po.EduMajor" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />,
+    <include refid="cn.zjw.edubackend.mapper.EduDeptMapper.Join_Dept_Column" />
+    from 
+    edu_major
+    <include refid="Join_Dept"></include>
+    <include refid="base_query_fuzzy" />
+    order by edu_major.create_time desc
+  </select>
+</mapper>

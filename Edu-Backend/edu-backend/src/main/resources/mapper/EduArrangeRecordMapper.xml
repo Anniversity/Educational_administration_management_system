@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zjw.edubackend.mapper.EduArrangeRecordMapper">
+  <resultMap id="BaseResultMap" type="cn.zjw.edubackend.pojo.po.EduArrangeRecord">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="year" jdbcType="INTEGER" property="year" />
+    <result column="semester" jdbcType="BIT" property="semester" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="cn.zjw.edubackend.pojo.po.EduArrangeRecord">
+    <result column="data" jdbcType="LONGVARCHAR" property="data" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    edu_arrange_record.id, edu_arrange_record.year, edu_arrange_record.semester, edu_arrange_record.status, edu_arrange_record.remark, edu_arrange_record.update_time, edu_arrange_record.create_time
+  </sql>
+  <sql id="Blob_Column_List">
+    data
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from edu_arrange_record
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from edu_arrange_record
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.zjw.edubackend.pojo.po.EduArrangeRecord">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into edu_arrange_record (year, semester, status,
+      remark, update_time, create_time,
+      data)
+    values (#{year,jdbcType=INTEGER}, #{semester,jdbcType=BIT}, #{status,jdbcType=TINYINT},
+      #{remark,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP},
+      #{data,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.zjw.edubackend.pojo.po.EduArrangeRecord">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into edu_arrange_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="year != null">
+        year,
+      </if>
+      <if test="semester != null">
+        semester,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="data != null">
+        data,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="year != null">
+        #{year,jdbcType=INTEGER},
+      </if>
+      <if test="semester != null">
+        #{semester,jdbcType=BIT},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="data != null">
+        #{data,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.zjw.edubackend.pojo.po.EduArrangeRecord">
+    update edu_arrange_record
+    <set>
+      <if test="year != null">
+        year = #{year,jdbcType=INTEGER},
+      </if>
+      <if test="semester != null">
+        semester = #{semester,jdbcType=BIT},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="data != null">
+        data = #{data,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="cn.zjw.edubackend.pojo.po.EduArrangeRecord">
+    update edu_arrange_record
+    set year = #{year,jdbcType=INTEGER},
+      semester = #{semester,jdbcType=BIT},
+      status = #{status,jdbcType=TINYINT},
+      remark = #{remark,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      data = #{data,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.zjw.edubackend.pojo.po.EduArrangeRecord">
+    update edu_arrange_record
+    set year = #{year,jdbcType=INTEGER},
+      semester = #{semester,jdbcType=BIT},
+      status = #{status,jdbcType=TINYINT},
+      remark = #{remark,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <sql id="base_query">
+    <trim prefix="WHERE" prefixOverrides="AND | OR">
+      <if test="id != null">
+         and edu_arrange_record.id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="year != null">
+         and edu_arrange_record.year = #{year,jdbcType=INTEGER}
+      </if>
+      <if test="semester != null">
+         and edu_arrange_record.semester = #{semester,jdbcType=BIT}
+      </if>
+      <if test="status != null">
+         and edu_arrange_record.status = #{status,jdbcType=TINYINT}
+      </if>
+      <if test="remark != null and remark.length > 0">
+         and edu_arrange_record.remark = #{remark,jdbcType=VARCHAR}
+      </if>
+      <if test="updateTime != null">
+         and edu_arrange_record.update_time = #{updateTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="createTime != null">
+         and edu_arrange_record.create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="data != null">
+         and edu_arrange_record.data = #{data,jdbcType=LONGVARCHAR}
+      </if>
+    </trim>
+  </sql>
+  <select id="selectList" parameterType="cn.zjw.edubackend.pojo.po.EduArrangeRecord" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from
+    edu_arrange_record
+    <include refid="base_query" />
+  </select>
+  <sql id="base_query_fuzzy">
+    <trim prefix="WHERE" prefixOverrides="AND | OR">
+      <if test="id != null">
+         and edu_arrange_record.id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="year != null">
+         and edu_arrange_record.year = #{year,jdbcType=INTEGER}
+      </if>
+      <if test="semester != null">
+         and edu_arrange_record.semester = #{semester,jdbcType=BIT}
+      </if>
+      <if test="status != null">
+         and edu_arrange_record.status = #{status,jdbcType=TINYINT}
+      </if>
+      <if test="remark != null and remark.length > 0">
+         and edu_arrange_record.remark LIKE CONCAT('%', #{remark,jdbcType=VARCHAR}, '%')
+      </if>
+      <if test="data != null">
+         and edu_arrange_record.data = #{data,jdbcType=LONGVARCHAR}
+      </if>
+    </trim>
+  </sql>
+  <select id="selectListFuzzy" parameterType="cn.zjw.edubackend.pojo.po.EduArrangeRecord" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from 
+    edu_arrange_record
+    <include refid="base_query_fuzzy" />
+    order by edu_arrange_record.create_time desc
+  </select>
+</mapper>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry excluding="cn/zjw/edubackend/common/config/" kind="src" path="edu-backend/src/main/java"/>
+	<classpathentry kind="src" path="edu-backend/src/main/java/cn/zjw/edubackend/common/config"/>
+	<classpathentry kind="src" path="edu-backend/src/test/java"/>
+	<classpathentry kind="lib" path="edu-backend/target/edu-backend-0.0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="output" path="edu-backend/target/classes"/>
+</classpath>

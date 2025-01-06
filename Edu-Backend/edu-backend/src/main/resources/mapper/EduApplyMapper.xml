@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zjw.edubackend.mapper.EduApplyMapper">
+    <resultMap id="BaseResultMap" type="cn.zjw.edubackend.pojo.po.EduApply">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="schedule_id" jdbcType="INTEGER" property="scheduleId"/>
+        <result column="new_section_id" jdbcType="INTEGER" property="newSectionId"/>
+        <result column="raw_section_id" jdbcType="INTEGER" property="rawSectionId"/>
+        <result column="raw_classroom_id" jdbcType="INTEGER" property="rawClassroomId"/>
+        <result column="new_classroom_id" jdbcType="INTEGER" property="newClassroomId"/>
+        <result column="reason" jdbcType="VARCHAR" property="reason"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+
+        <association property="schedule" resultMap="cn.zjw.edubackend.mapper.EduScheduleMapper.ScheduleResultMap"/>
+        <association property="rawClassroom" column="raw_classroom_id"
+                     select="cn.zjw.edubackend.mapper.EduClassroomMapper.selectByPrimaryKey"/>
+        <association property="newClassroom" column="new_classroom_id"
+                     select="cn.zjw.edubackend.mapper.EduClassroomMapper.selectByPrimaryKey"/>
+        <association property="rawSection" column="raw_section_id"
+                     select="cn.zjw.edubackend.mapper.EduSectionMapper.selectByPrimaryKey"/>
+        <association property="newSection" column="new_section_id"
+                     select="cn.zjw.edubackend.mapper.EduSectionMapper.selectByPrimaryKey"/>
+    </resultMap>
+
+    <resultMap id="rawClassroomResultMap" type="cn.zjw.edubackend.pojo.po.EduClassroom">
+        <id column="raw_classroom_id" property="id"/>
+        <id column="raw_classroom_name" property="name"/>
+    </resultMap>
+    <resultMap id="newClassroomResultMap" type="cn.zjw.edubackend.pojo.po.EduClassroom">
+        <id column="new_classroom_id" property="id"/>
+        <id column="new_classroom_name" property="name"/>
+    </resultMap>
+    <resultMap id="rawSectionResultMap" type="cn.zjw.edubackend.pojo.po.EduSection">
+        <id column="raw_section_id" property="id"/>
+        <id column="raw_section_start_num" property="startNum"/>
+        <id column="raw_section_end_num" property="endNum"/>
+    </resultMap>
+    <resultMap id="newSectionResultMap" type="cn.zjw.edubackend.pojo.po.EduSection">
+        <id column="new_section_id" property="id"/>
+        <id column="new_section_start_num" property="startNum"/>
+        <id column="new_section_end_num" property="endNum"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        edu_apply
+        .
+        id
+        , edu_apply.schedule_id, edu_apply.new_section_id, edu_apply.raw_section_id, edu_apply.raw_classroom_id, edu_apply.new_classroom_id,
+    edu_apply.reason, edu_apply.status, edu_apply.update_time, edu_apply.create_time
+    </sql>
+    <sql id="Join_Schedule">
+        LEFT JOIN edu_schedule
+            ON edu_schedule.id = edu_apply.schedule_id
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from edu_apply
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from edu_apply
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="cn.zjw.edubackend.pojo.po.EduApply">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into edu_apply (schedule_id, new_section_id, raw_section_id,
+        raw_classroom_id, new_classroom_id, reason,
+        status, update_time, create_time
+        )
+        values (#{scheduleId,jdbcType=INTEGER}, #{newSectionId,jdbcType=INTEGER}, #{rawSectionId,jdbcType=INTEGER},
+        #{rawClassroomId,jdbcType=INTEGER}, #{newClassroomId,jdbcType=INTEGER}, #{reason,jdbcType=VARCHAR},
+        #{status,jdbcType=TINYINT}, #{updateTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="cn.zjw.edubackend.pojo.po.EduApply">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into edu_apply
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="scheduleId != null">
+                schedule_id,
+            </if>
+            <if test="newSectionId != null">
+                new_section_id,
+            </if>
+            <if test="rawSectionId != null">
+                raw_section_id,
+            </if>
+            <if test="rawClassroomId != null">
+                raw_classroom_id,
+            </if>
+            <if test="newClassroomId != null">
+                new_classroom_id,
+            </if>
+            <if test="reason != null">
+                reason,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="scheduleId != null">
+                #{scheduleId,jdbcType=INTEGER},
+            </if>
+            <if test="newSectionId != null">
+                #{newSectionId,jdbcType=INTEGER},
+            </if>
+            <if test="rawSectionId != null">
+                #{rawSectionId,jdbcType=INTEGER},
+            </if>
+            <if test="rawClassroomId != null">
+                #{rawClassroomId,jdbcType=INTEGER},
+            </if>
+            <if test="newClassroomId != null">
+                #{newClassroomId,jdbcType=INTEGER},
+            </if>
+            <if test="reason != null">
+                #{reason,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=TINYINT},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.zjw.edubackend.pojo.po.EduApply">
+        update edu_apply
+        <set>
+            <if test="scheduleId != null">
+                schedule_id = #{scheduleId,jdbcType=INTEGER},
+            </if>
+            <if test="newSectionId != null">
+                new_section_id = #{newSectionId,jdbcType=INTEGER},
+            </if>
+            <if test="rawSectionId != null">
+                raw_section_id = #{rawSectionId,jdbcType=INTEGER},
+            </if>
+            <if test="rawClassroomId != null">
+                raw_classroom_id = #{rawClassroomId,jdbcType=INTEGER},
+            </if>
+            <if test="newClassroomId != null">
+                new_classroom_id = #{newClassroomId,jdbcType=INTEGER},
+            </if>
+            <if test="reason != null">
+                reason = #{reason,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="cn.zjw.edubackend.pojo.po.EduApply">
+        update edu_apply
+        set schedule_id      = #{scheduleId,jdbcType=INTEGER},
+            new_section_id   = #{newSectionId,jdbcType=INTEGER},
+            raw_section_id   = #{rawSectionId,jdbcType=INTEGER},
+            raw_classroom_id = #{rawClassroomId,jdbcType=INTEGER},
+            new_classroom_id = #{newClassroomId,jdbcType=INTEGER},
+            reason           = #{reason,jdbcType=VARCHAR},
+            status           = #{status,jdbcType=TINYINT},
+            update_time      = #{updateTime,jdbcType=TIMESTAMP},
+            create_time      = #{createTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <sql id="base_query">
+        <trim prefix="WHERE" prefixOverrides="AND | OR">
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="scheduleId != null">
+                and schedule_id = #{scheduleId,jdbcType=INTEGER}
+            </if>
+            <if test="newSectionId != null">
+                and new_section_id = #{newSectionId,jdbcType=INTEGER}
+            </if>
+            <if test="rawSectionId != null">
+                and raw_section_id = #{rawSectionId,jdbcType=INTEGER}
+            </if>
+            <if test="rawClassroomId != null">
+                and raw_classroom_id = #{rawClassroomId,jdbcType=INTEGER}
+            </if>
+            <if test="newClassroomId != null">
+                and new_classroom_id = #{newClassroomId,jdbcType=INTEGER}
+            </if>
+            <if test="reason != null and reason.length > 0">
+                and reason = #{reason,jdbcType=VARCHAR}
+            </if>
+            <if test="status != null">
+                and status = #{status,jdbcType=TINYINT}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+        </trim>
+    </sql>
+    <select id="selectList" parameterType="cn.zjw.edubackend.pojo.po.EduApply" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        edu_apply
+        <include refid="base_query"/>
+    </select>
+    <sql id="base_query_fuzzy">
+        <trim prefix="WHERE" prefixOverrides="AND | OR">
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="scheduleId != null">
+                and schedule_id = #{scheduleId,jdbcType=INTEGER}
+            </if>
+            <if test="newSectionId != null">
+                and new_section_id = #{newSectionId,jdbcType=INTEGER}
+            </if>
+            <if test="rawSectionId != null">
+                and raw_section_id = #{rawSectionId,jdbcType=INTEGER}
+            </if>
+            <if test="rawClassroomId != null">
+                and raw_classroom_id = #{rawClassroomId,jdbcType=INTEGER}
+            </if>
+            <if test="newClassroomId != null">
+                and new_classroom_id = #{newClassroomId,jdbcType=INTEGER}
+            </if>
+            <if test="reason != null and reason.length > 0">
+                and reason LIKE CONCAT('%', #{reason,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="status != null">
+                and status = #{status,jdbcType=TINYINT}
+            </if>
+        </trim>
+    </sql>
+    <select id="selectListFuzzy" parameterType="cn.zjw.edubackend.pojo.po.EduApply" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>,
+        <include refid="cn.zjw.edubackend.mapper.EduScheduleMapper.Join_Schedule_Column"/>,
+        <include refid="cn.zjw.edubackend.mapper.EduCourseMapper.Join_Course_Column"/>
+        from
+        edu_apply
+        <include refid="Join_Schedule"/>
+        <include refid="cn.zjw.edubackend.mapper.EduScheduleMapper.Join_Course"/>
+        <include refid="base_query_fuzzy"/>
+        order by edu_apply.create_time desc
+    </select>
+</mapper>

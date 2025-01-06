@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zjw.edubackend.mapper.EduCourseMapper">
+    <resultMap id="BaseResultMap" type="cn.zjw.edubackend.pojo.po.EduCourse">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="hours" jdbcType="INTEGER" property="hours"/>
+        <result column="type" jdbcType="TINYINT" property="type"/>
+        <result column="sum_number" jdbcType="INTEGER" property="sumNumber"/>
+        <result column="sum_class" jdbcType="INTEGER" property="sumClass"/>
+        <result column="dept_id" jdbcType="INTEGER" property="deptId"/>
+        <result column="teacher_id" jdbcType="INTEGER" property="teacherId"/>
+        <result column="class_id" jdbcType="INTEGER" property="classId"/>
+        <result column="credit" jdbcType="DECIMAL" property="credit"/>
+        <result column="year" jdbcType="INTEGER" property="year"/>
+        <result column="semester" jdbcType="BIT" property="semester"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+
+        <association property="dept" resultMap="cn.zjw.edubackend.mapper.EduDeptMapper.DeptResultMap"/>
+        <association property="teacher" resultMap="cn.zjw.edubackend.mapper.EduTeacherMapper.TeacherResultMap"/>
+        <association property="eduClass" resultMap="cn.zjw.edubackend.mapper.EduClassMapper.ClassResultMap"/>
+    </resultMap>
+    <resultMap id="CourseResultMap" type="cn.zjw.edubackend.pojo.po.EduCourse">
+        <id column="course_id" property="id"/>
+        <result column="course_name" property="name"/>
+        <result column="course_year" property="year"/>
+        <result column="course_semester" property="semester"/>
+        <result column="course_type" property="type"/>
+
+        <association property="eduClass" resultMap="cn.zjw.edubackend.mapper.EduClassMapper.ClassResultMap"/>
+        <association property="teacher" resultMap="cn.zjw.edubackend.mapper.EduTeacherMapper.TeacherResultMap"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        edu_course.id, edu_course.name, edu_course.hours, edu_course.type, edu_course.sum_number, edu_course.sum_class, edu_course.dept_id, edu_course.teacher_id, edu_course.class_id, edu_course.credit,
+    edu_course.year, edu_course.semester, edu_course.status, edu_course.create_time, edu_course.update_time
+    </sql>
+    <sql id="Join_Course_Column">
+        edu_course
+        .
+        id
+        course_id, edu_course.name course_name, edu_course.year course_year, edu_course.semester course_semester, edu_course.type course_type
+    </sql>
+    <sql id="Join_Dept">
+        LEFT JOIN edu_dept
+        ON edu_dept.id = edu_course.dept_id
+    </sql>
+    <sql id="Join_Teacher">
+        LEFT JOIN edu_teacher
+        ON edu_teacher.id = edu_course.teacher_id
+    </sql>
+    <sql id="Join_Class">
+        LEFT JOIN edu_class
+        ON edu_class.id = edu_course.class_id
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from edu_course
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from edu_course
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="cn.zjw.edubackend.pojo.po.EduCourse">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into edu_course (name, hours, type,
+        sum_number, sum_class, dept_id,
+        teacher_id, class_id, credit,
+        year, semester, status,
+        create_time, update_time)
+        values (#{name,jdbcType=VARCHAR}, #{hours,jdbcType=INTEGER}, #{type,jdbcType=TINYINT},
+        #{sumNumber,jdbcType=INTEGER}, #{sumClass,jdbcType=INTEGER}, #{deptId,jdbcType=INTEGER},
+        #{teacherId,jdbcType=INTEGER}, #{classId,jdbcType=INTEGER}, #{credit,jdbcType=DECIMAL},
+        #{year,jdbcType=INTEGER}, #{semester,jdbcType=BIT}, #{status,jdbcType=TINYINT},
+        #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="cn.zjw.edubackend.pojo.po.EduCourse">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into edu_course
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                name,
+            </if>
+            <if test="hours != null">
+                hours,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="sumNumber != null">
+                sum_number,
+            </if>
+            <if test="sumClass != null">
+                sum_class,
+            </if>
+            <if test="deptId != null">
+                dept_id,
+            </if>
+            <if test="teacherId != null">
+                teacher_id,
+            </if>
+            <if test="classId != null">
+                class_id,
+            </if>
+            <if test="credit != null">
+                credit,
+            </if>
+            <if test="year != null">
+                year,
+            </if>
+            <if test="semester != null">
+                semester,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="hours != null">
+                #{hours,jdbcType=INTEGER},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=TINYINT},
+            </if>
+            <if test="sumNumber != null">
+                #{sumNumber,jdbcType=INTEGER},
+            </if>
+            <if test="sumClass != null">
+                #{sumClass,jdbcType=INTEGER},
+            </if>
+            <if test="deptId != null">
+                #{deptId,jdbcType=INTEGER},
+            </if>
+            <if test="teacherId != null">
+                #{teacherId,jdbcType=INTEGER},
+            </if>
+            <if test="classId != null">
+                #{classId,jdbcType=INTEGER},
+            </if>
+            <if test="credit != null">
+                #{credit,jdbcType=DECIMAL},
+            </if>
+            <if test="year != null">
+                #{year,jdbcType=INTEGER},
+            </if>
+            <if test="semester != null">
+                #{semester,jdbcType=BIT},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.zjw.edubackend.pojo.po.EduCourse">
+        update edu_course
+        <set>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="hours != null">
+                hours = #{hours,jdbcType=INTEGER},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=TINYINT},
+            </if>
+            <if test="sumNumber != null">
+                sum_number = #{sumNumber,jdbcType=INTEGER},
+            </if>
+            <if test="sumClass != null">
+                sum_class = #{sumClass,jdbcType=INTEGER},
+            </if>
+            <if test="deptId != null">
+                dept_id = #{deptId,jdbcType=INTEGER},
+            </if>
+            <if test="teacherId != null">
+                teacher_id = #{teacherId,jdbcType=INTEGER},
+            </if>
+            <if test="classId != null">
+                class_id = #{classId,jdbcType=INTEGER},
+            </if>
+            <if test="credit != null">
+                credit = #{credit,jdbcType=DECIMAL},
+            </if>
+            <if test="year != null">
+                year = #{year,jdbcType=INTEGER},
+            </if>
+            <if test="semester != null">
+                semester = #{semester,jdbcType=BIT},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="cn.zjw.edubackend.pojo.po.EduCourse">
+        update edu_course
+        set name        = #{name,jdbcType=VARCHAR},
+            hours       = #{hours,jdbcType=INTEGER},
+            type        = #{type,jdbcType=TINYINT},
+            sum_number  = #{sumNumber,jdbcType=INTEGER},
+            sum_class   = #{sumClass,jdbcType=INTEGER},
+            dept_id     = #{deptId,jdbcType=INTEGER},
+            teacher_id  = #{teacherId,jdbcType=INTEGER},
+            class_id    = #{classId,jdbcType=INTEGER},
+            credit      = #{credit,jdbcType=DECIMAL},
+            year        = #{year,jdbcType=INTEGER},
+            semester    = #{semester,jdbcType=BIT},
+            status      = #{status,jdbcType=TINYINT},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            update_time = #{updateTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <sql id="base_query">
+        <trim prefix="WHERE" prefixOverrides="AND | OR">
+            <if test="id != null">
+                and edu_course.id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="name != null and name.length > 0">
+                and edu_course.name = #{name,jdbcType=VARCHAR}
+            </if>
+            <if test="hours != null">
+                and edu_course.hours = #{hours,jdbcType=INTEGER}
+            </if>
+            <if test="type != null">
+                and edu_course.type = #{type,jdbcType=TINYINT}
+            </if>
+            <if test="sumNumber != null">
+                and edu_course.sum_number = #{sumNumber,jdbcType=INTEGER}
+            </if>
+            <if test="sumClass != null">
+                and edu_course.sum_class = #{sumClass,jdbcType=INTEGER}
+            </if>
+            <if test="deptId != null">
+                and edu_course.dept_id = #{deptId,jdbcType=INTEGER}
+            </if>
+            <if test="teacherId != null">
+                and edu_course.teacher_id = #{teacherId,jdbcType=INTEGER}
+            </if>
+            <if test="classId != null">
+                and edu_course.class_id = #{classId,jdbcType=INTEGER}
+            </if>
+            <if test="credit != null">
+                and edu_course.credit = #{credit,jdbcType=DECIMAL}
+            </if>
+            <if test="year != null">
+                and edu_course.year = #{year,jdbcType=INTEGER}
+            </if>
+            <if test="semester != null">
+                and edu_course.semester = #{semester,jdbcType=BIT}
+            </if>
+            <if test="status != null">
+                and edu_course.status = #{status,jdbcType=TINYINT}
+            </if>
+            <if test="createTime != null">
+                and edu_course.create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="updateTime != null">
+                and edu_course.update_time = #{updateTime,jdbcType=TIMESTAMP}
+            </if>
+        </trim>
+    </sql>
+    <select id="selectList" parameterType="cn.zjw.edubackend.pojo.po.EduCourse" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        edu_course
+        <include refid="base_query"/>
+    </select>
+    <sql id="base_query_fuzzy">
+        <trim prefix="WHERE" prefixOverrides="AND | OR">
+            <if test="id != null">
+                and edu_course.id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="name != null and name.length > 0">
+                and edu_course.name LIKE CONCAT('%', #{name,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="hours != null">
+                and edu_course.hours = #{hours,jdbcType=INTEGER}
+            </if>
+            <if test="type != null">
+                and edu_course.type = #{type,jdbcType=TINYINT}
+            </if>
+            <if test="sumNumber != null">
+                and edu_course.sum_number = #{sumNumber,jdbcType=INTEGER}
+            </if>
+            <if test="sumClass != null">
+                and edu_course.sum_class = #{sumClass,jdbcType=INTEGER}
+            </if>
+            <if test="deptId != null">
+                and edu_course.dept_id = #{deptId,jdbcType=INTEGER}
+            </if>
+            <if test="teacherId != null">
+                and edu_course.teacher_id = #{teacherId,jdbcType=INTEGER}
+            </if>
+            <if test="classId != null">
+                and edu_course.class_id = #{classId,jdbcType=INTEGER}
+            </if>
+            <if test="credit != null">
+                and edu_course.credit = #{credit,jdbcType=DECIMAL}
+            </if>
+            <if test="year != null">
+                and edu_course.year = #{year,jdbcType=INTEGER}
+            </if>
+            <if test="semester != null">
+                and edu_course.semester = #{semester,jdbcType=BIT}
+            </if>
+            <if test="status != null">
+                and edu_course.status = #{status,jdbcType=TINYINT}
+            </if>
+        </trim>
+    </sql>
+    <select id="selectListFuzzy" parameterType="cn.zjw.edubackend.pojo.po.EduCourse" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>,
+        <include refid="cn.zjw.edubackend.mapper.EduDeptMapper.Join_Dept_Column"/>,
+        <include refid="cn.zjw.edubackend.mapper.EduTeacherMapper.Join_Teacher_Column"/>,
+        <include refid="cn.zjw.edubackend.mapper.EduClassMapper.Join_Class_Column"/>
+        from
+        edu_course
+        <include refid="Join_Dept"/>
+        <include refid="Join_Teacher"/>
+        <include refid="Join_Class"/>
+        <include refid="base_query_fuzzy"/>
+        order by edu_course.create_time desc
+    </select>
+    <select id="unArrangedCourseList" resultMap="BaseResultMap">
+        SELECT edu_course.id, edu_course.name, edu_course.year, edu_course.semester,
+        <include refid="cn.zjw.edubackend.mapper.EduTeacherMapper.Join_Teacher_Column"/>
+        FROM edu_course
+        <include refid="Join_Teacher"/>
+        WHERE edu_course.id NOT IN(SELECT distinct course_id FROM edu_schedule)
+        AND edu_course.year = #{year} AND edu_course.semester = #{semester}
+    </select>
+</mapper>
